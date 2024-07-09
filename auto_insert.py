@@ -1,10 +1,5 @@
 from pymongo import MongoClient
 from pymongo.encryption_options import AutoEncryptionOpts
-from pymongo.encryption import ClientEncryption
-import base64
-import os
-from bson.codec_options import CodecOptions
-from bson.binary import STANDARD, UUID
 import pprint
 from your_credentials import get_credentials
 
@@ -99,7 +94,7 @@ def insert_patient(
 medical_record = [{"weight": 180, "bloodPressure": "120/80"}]
 insert_patient(
     secureClient.medicalRecords.patients,
-    "Jon Doe",
+    "JAne Doe",
     241014209,
     "AB+",
     medical_record,
@@ -110,9 +105,9 @@ insert_patient(
 regularClient = MongoClient(connection_string)
 # start-find
 print("Finding a document with regular (non-encrypted) client.")
-result = regularClient.medicalRecords.patients.find_one({"name": "Jon Doe"})
+result = regularClient.medicalRecords.patients.find_one({"name": "JAne Doe"})
 pprint.pprint(result)
 
 print("Finding a document with encrypted client, searching on an encrypted field")
-pprint.pprint(secureClient.medicalRecords.patients.find_one({"name": "Jon Doe"}))
+pprint.pprint(secureClient.medicalRecords.patients.find_one({"name": "JAne Doe"}))
 # end-find

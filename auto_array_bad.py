@@ -1,6 +1,10 @@
 from pymongo import MongoClient
 from pymongo.encryption_options import AutoEncryptionOpts
-from pymongo.encryption import ClientEncryption, Algorithm
+from pymongo.encryption import ClientEncryption
+import base64
+import os
+from bson.codec_options import CodecOptions
+from bson.binary import STANDARD, UUID
 import pprint
 from your_credentials import get_credentials
 
@@ -25,20 +29,54 @@ kms_providers = {
 
 # start-schema
 # Make All fields random to use json pointer to reference key-id
-json_schema_prop = {
+json_schema = {
     "bsonType": "object",
     "encryptMetadata": {"keyId": "/key-id"},
-    "patternProperties": {
-        "_PIIString$": {
+    "properties": {
+        "insurance": {
+            "bsonType": "object",
+            "properties": {
+                "policyNumber": {
+                    "encrypt": {
+                        "bsonType": "int",
+                        "algorithm": "AEAD_AES_256_CBC_HMAC_SHA_512-Random",
+                    }
+                }
+            },
+        },
+        "medicalRecords": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "object",
+                "properties": {
+                    "weight": {
+                        "encrypt": {
+                            "bsonType": "int",
+                            "algorithm": "AEAD_AES_256_CBC_HMAC_SHA_512-Random",
+                        }
+                    },
+                    "bloodPressure": {
+                        "bsonType": "string",
+                    }
+                },
+            }
+        },
+        "bloodType": {
             "encrypt": {
                 "bsonType": "string",
                 "algorithm": "AEAD_AES_256_CBC_HMAC_SHA_512-Random",
             }
-        }
-    }
+        },
+        "ssn": {
+            "encrypt": {
+                "bsonType": "int",
+                "algorithm": "AEAD_AES_256_CBC_HMAC_SHA_512-Random",
+            }
+        },
+    },
 }
 
-patient_schema = {"medicalRecords.patients": json_schema_prop}
+patient_schema = {"medicalRecords.patients": json_schema}
 # end-schema
 
 
@@ -64,44 +102,15 @@ def insert_patient(
         "bloodType": blood_type,
         "medicalRecords": medical_records,
         "insurance": insurance,
-        "basePressure_PIIString": "111/111",
         "key-id": "demo-data-key",
-        "hodgePodge": {
-            "foo": "bah",
-            "foo_PIIString": "bababab"
-        }
     }
     collection.insert_one(doc)
 
-coll = secureClient.medicalRecords.patients
-codec_options = coll.codec_options
-ce = ClientEncryption(
-    kms_providers,
-    "encryption.__keyVault",
-    secureClient,
-    codec_options
-)
 
-k = secureClient.encryption.get_collection("__keyVault").find_one({ "keyAltNames": "demo-data-key"})["_id"]
-print(k)
-
-def encrypt(s, ce, k):
-    return ce.encrypt(
-        s,
-        Algorithm.AEAD_AES_256_CBC_HMAC_SHA_512_Deterministic,
-        key_id=k,
-    )
-
-medical_record = [
-    {"weight": 180, "bloodPressure": encrypt("120/80", ce, k)},
-    {"weight": 190, "bloodPressure": "120/80"},
-    {"weight": 160, "bloodPressure": "120/80"}
-]
-
-
+medical_record = [{"weight": 180, "bloodPressure": "120/80"}]
 insert_patient(
     secureClient.medicalRecords.patients,
-    "JePpa Doe",
+    "EFfie Doe",
     241014209,
     "AB+",
     medical_record,
@@ -112,9 +121,9 @@ insert_patient(
 regularClient = MongoClient(connection_string)
 # start-find
 print("Finding a document with regular (non-encrypted) client.")
-result = regularClient.medicalRecords.patients.find_one({"name": "JePpa Doe"})
+result = regularClient.medicalRecords.patients.find_one({"name": "EFfie Doe"})
 pprint.pprint(result)
 
-print("Finding a document with encrypted client, searching on an un-encrypted field")
-pprint.pprint(secureClient.medicalRecords.patients.find_one({"name": "JePpa Doe"}))
+print("Finding a document with encrypted client, searching on an encrypted field")
+pprint.pprint(secureClient.medicalRecords.patients.find_one({"name": "EFfie Doe"}))
 # end-find

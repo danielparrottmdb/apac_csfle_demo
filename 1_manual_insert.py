@@ -52,7 +52,7 @@ def insert_patient(collection, name, ssn, blood_type, medical_records, policy_nu
         "bloodType": blood_type,
         "medicalRecords": medical_records,
         "insurance": insurance,
-        "key-id": "demo-data-key",
+        "key-alt-name": "demo-data-key",
     }
     collection.insert_one(doc)
 

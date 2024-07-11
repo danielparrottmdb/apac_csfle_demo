@@ -25,7 +25,8 @@ kms_providers = {
 
 regularClient = MongoClient(connection_string)
 try:
-    # Can also use keyVault.getKeyByAltName AFTER getting an encrypted client
+    # Can also use keyVault.getKeyByAltName (in mongosh; aka
+    # ClientEncryption.get_key_vault_by_alt_name() in python)
     demo_data_key_id = regularClient["encryption"]["__keyVault"].find_one({"keyAltNames": "demo-data-key"},{"_id": 1})["_id"]
 except Exception as e:
     print(f"Error getting key id: {e}")
@@ -35,10 +36,10 @@ except Exception as e:
 # demo_data_key_id = "demo-data-key"
 
 # start-schema
-# Make All fields random to use json pointer to reference key-id
+# Make All fields random to use json pointer to reference key-alt-name
 json_schema = {
     "bsonType": "object",
-    "encryptMetadata": {"keyId": "/key-id"},
+    "encryptMetadata": {"keyId": "/key-alt-name"},
     "properties": {
         "insurance": {
             "bsonType": "object",
@@ -100,7 +101,7 @@ def insert_patient(
         "bloodType": blood_type,
         "medicalRecords": medical_records,
         "insurance": insurance,
-        "key-id": "demo-data-key",
+        "key-alt-name": "demo-data-key",
     }
     collection.insert_one(doc)
 

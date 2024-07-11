@@ -28,7 +28,7 @@ kms_providers = {
 # end-kmsproviders
 
 # start-schema
-# Make All fields random to use json pointer to reference key-id
+# Make All fields random to use json pointer to reference key-alt-name
 json_schema = {}
 
 patient_schema = {"medicalRecords.patients": json_schema}

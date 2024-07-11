@@ -28,10 +28,10 @@ kms_providers = {
 # end-kmsproviders
 
 # start-schema
-# Make All fields random to use json pointer to reference key-id
+# Make All fields random to use json pointer to reference key-alt-name
 json_schema = {
     "bsonType": "object",
-    "encryptMetadata": {"keyId": "/key-id"},
+    "encryptMetadata": {"keyId": "/key-alt-name"},
     "properties": {
         "insurance": {
             "bsonType": "object",
@@ -102,7 +102,7 @@ def insert_patient(
         "bloodType": blood_type,
         "medicalRecords": medical_records,
         "insurance": insurance,
-        "key-id": "demo-data-key",
+        "key-alt-name": "demo-data-key",
     }
     collection.insert_one(doc)
 

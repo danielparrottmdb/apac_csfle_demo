@@ -24,10 +24,10 @@ kms_providers = {
 # end-kmsproviders
 
 # start-schema
-# Make All fields random to use json pointer to reference key-id
+# Make All fields random to use json pointer to reference key-alt-name
 json_schema_prop = {
     "bsonType": "object",
-    "encryptMetadata": {"keyId": "/key-id"},
+    "encryptMetadata": {"keyId": "/key-alt-name"},
     "patternProperties": {
         "_PIIString$": {
             "encrypt": {
@@ -65,7 +65,7 @@ def insert_patient(
         "medicalRecords": medical_records,
         "insurance": insurance,
         "basePressure_PIIString": "111/111",
-        "key-id": "demo-data-key",
+        "key-alt-name": "demo-data-key",
         "hodgePodge": {
             "foo": "bah",
             "foo_PIIString": "bababab"

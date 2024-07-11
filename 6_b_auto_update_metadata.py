@@ -34,7 +34,7 @@ except Exception as e:
 # Make All fields random to use json pointer to reference key-alt-name
 json_schema = {
     "bsonType": "object",
-    "encryptMetadata": {"keyId": "/key-alt-name"},
+    "encryptMetadata": { "keyId": [demo_data_key_id] },
     "properties": {
         "insurance": {
             "bsonType": "object",
@@ -63,7 +63,6 @@ json_schema = {
             "encrypt": {
                 "bsonType": "int",
                 "algorithm": "AEAD_AES_256_CBC_HMAC_SHA_512-Deterministic",
-                "keyId": [demo_data_key_id]
             }
         },
     },

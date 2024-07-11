@@ -12,10 +12,10 @@
 // Select the database to use.
 use('medicalRecords');
 
-pdocs = db.patients.find().toArray();
+patient_docs = db.patients.find().toArray();
 
 
 use('encryption');
 keys = db.getCollection("__keyVault").find().toArray();
 
-console.log({ pdocs, keys });
+console.log({ patient_docs, keys });

@@ -4,3 +4,5 @@ include/*
 __pycache__/*
 pyvenv.cfg
 .env
+
+master-key.txt

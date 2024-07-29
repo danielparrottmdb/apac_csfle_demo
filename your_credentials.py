@@ -7,9 +7,10 @@ dotenv.load_dotenv()
 username = os.environ.get('MDB_USERNAME')
 password = os.environ.get('MDB_PASSWORD')
 _credentials = {
-    # Mongo Paths + URI
-    "MONGODB_URI": f"mongodb+srv://{username}:{password}@csfle0.ucov20x.mongodb.net/?retryWrites=true&w=majority&appName=csfle0",
-    "SHARED_LIB_PATH": "/Users/daniel.parrott/Documents/PS/csfle_exp/mongo_crypt/lib/mongo_crypt_v1.dylib",
+    # TODO: Set your Mongo Server URI and path to crypt_shared here
+    "MONGODB_URI": f"mongodb+srv://{username}:{password}@<MONGODB_SERVER_URL>/?retryWrites=true&w=majority&appName=csfle0",
+    # .dylib on mac, .so on linux
+    "SHARED_LIB_PATH": "</Path/to/lib/mongo_crypt_v1.dylib>",
 }
 
 

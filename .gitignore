@@ -6,3 +6,6 @@ pyvenv.cfg
 .env
 
 master-key.txt
+
+*.gz
+*.zip
